@@ -1,4 +1,4 @@
-=== Inlinemanual ===
+=== Inline Manual ===
 Contributors: o----o
 Donate link: 
 Tags: API, manual
