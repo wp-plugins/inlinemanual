@@ -147,7 +147,7 @@ add_action('admin_enqueue_scripts', 'inm_player_injector');
 function inm_player_html() {
    echo '<div id="inm-progress"><div class="inm-progress"></div></div><div id="inline-manual" data-topic-title="" data-steps=""><a id="inm-trigger" href="#"><i class="inm-icon"></i></a></div>';
 	$site_url = parse_url(get_site_url());
-	$site_path = $url['path'];
+	$site_path = $url['path'].'/';
 	$config = json_encode(
       array(
           'tour' => array('basePath' => $site_path),
