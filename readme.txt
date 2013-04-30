@@ -14,7 +14,7 @@ Connect your "Inline manual" with your Wordpress.
 
 Inline manual is an online documentation, making easy for everyone to create, update and re-use documentation.
 
-Inlinemanual plugin lets you connect to your Inlinemanual.com account where form you can fetch your manuals (topics). Each topic shown to users based on their capabilities (Hidden, Public, Subscriber, Contributor, Author, Editor, Administrator).
+Inlinemanual plugin lets you connect to your <a href="http://inlinemanual.com">Inlinemanual.com</a> account where form you can fetch your manuals (topics). Each topic shown to users based on their capabilities (Hidden, Public, Subscriber, Contributor, Author, Editor, Administrator).
 
 == Installation ==
 
