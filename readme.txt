@@ -1,10 +1,10 @@
 === Inline Manual ===
-Contributors: o----o
+Contributors: o----o, mareksotak
 Donate link: 
 Tags: API, manual
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 0.1
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,7 +34,7 @@ Is it production ready?
 We are in the development process now. Feel free to test it but don't use it for your clients yet.
 
 == Screenshots ==
-1. no screenshot at the moment
+1. Tour manager
 
 
 == Changelog ==
