@@ -18,7 +18,7 @@ Inlinemanual plugin lets you connect to your <a href="http://inlinemanual.com">I
 
 == Installation ==
 
-1. lunch the "add plugin" page in your WP admin.
+1. Launch the "add plugin" page in your WP admin.
 2. Find the "Inlinemanual" plugin
 3. Activate the plugin
 4. Fill in your API key in the WP Admin>Inlinemanual>account (tab)
