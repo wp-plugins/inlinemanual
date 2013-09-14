@@ -54,10 +54,9 @@ function inlinemanual_feed() {
 		$output = inm_feedback_topic($tid);
 	}else{
 		// get all Ids of all topics
-		$output = inm_feedback_ids();	
+		$output = inm_feedback_ids();
 	}
 	echo $output;
-	
 }
 
 function inm_feedback_ids() {
@@ -77,7 +76,8 @@ function inm_feedback_ids() {
 				'tid' => $val['id'],
 				'title' => $val['title'],
 				'description' => $val['description'],
-				'version' => $val['version']
+				'version' => $val['version'],
+				'steps' => $val['steps']
 			);
 		}
 	}
@@ -122,8 +122,8 @@ function inm_player_injector(){
 		// check if the current user is granted enough capabilities to see current topic
 		if ((int)$user_capability >= (int)$val['permissions'] && (int)$val['permissions'] != -2){ 
 
-			wp_register_script ( 'inm_player', 'http://inlinemanual.com/inm/player/inm-player.min.js', array('jquery'));
-			wp_register_style ( 'inm_styles','http://inlinemanual.com/inm/player/inm-player.css' );
+			wp_register_script ( 'inm_player', 'http://inlinemanual.com/inm/player2/js/player.min.js', array('jquery'));
+			wp_register_style ( 'inm_styles','http://inlinemanual.com/inm/player2/css/player.min.css' );
 
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'inm_player' );
@@ -149,15 +149,23 @@ function inm_player_html() {
 	$site_url = parse_url(get_site_url());
 	$site_path = $site_url['path'].'/';
 	$config = json_encode(
-      array(
-          'tour' => array('basePath' => $site_path),
-          'routes' => array(
-            'topics' => '?feed=inlinemanual',
-            'topic' => '?feed=inlinemanual&inm_topic='
-          )
-      )
+		array(
+			'basePath' => $site_path,
+			'topicsUrl' => '?feed=inlinemanual',
+			'mode' => 'tour',
+			'l10n' => array(
+				'title' => 'Get support',
+				'refresh' => 'Refresh',
+				'backToTopics' => '&laquo; Back to topics',
+				'scrollUp' => 'Scroll up',
+				'scrollDown' => 'Scroll down',
+				'progress' => 'of',
+				'poweredBy' => 'Powered by'
+			)
+ 		)
     );
-     echo '<script>jQuery(document).ready( function() { IMP.start('.$config.'); })</script>';
+
+     echo '<script>jQuery(document).ready( function() { IMP.init( ' . $config . ' ); })</script>';
 };
 
 
@@ -173,7 +181,7 @@ function inm_player_html() {
  */
 function inm_wordpress_topics_fetch_all() {
 	require(dirname(__FILE__) . '/lib/InlineManual.php');
-	// get actua data form DB
+	// get actual data form DB
 	// define the table prefix
 	global $schema_DB_table;
 	// get the options from DB
@@ -182,11 +190,10 @@ function inm_wordpress_topics_fetch_all() {
 	$test_key = '407eea6c384cf0717b4930b357ea660f'; // 407eea6c384cf0717b4930b357ea660f  // test me Yo
 	InlineManual::$site_api_key = $api_key[0]; 
 	InlineManual::$verify_ssl_certs = FALSE;
-	
 	try {
 		// connect to inlinemanual.com
 		//  fetch all remote topics 
-		$topics = InlineManual_Player::fetchAllTopics();
+		$topics = InlineManual_Site::fetchAllTopics();
 		// var_dump($topics);
 		// get the dummy topic .. 
 
@@ -211,8 +218,8 @@ function inm_wordpress_topics_fetch_all() {
 			 );		
 			// fetch the steps for each topic separatelly .. 
 			// Man, dont ask me why.. It is not my decision
-			$topic_detail = InlineManual_Player::fetchTopic($value->id);
-			$tmp_topics[$i]['steps'] = is_object($topic_detail->steps) ? $topic_detail->steps : '';
+			$topic_detail = InlineManual_Site::fetchTopic($value->id);
+			$tmp_topics[$i]['steps'] = is_array($topic_detail->steps) ? $topic_detail->steps : '';
 			// walk through actual DB
 			foreach($data['topics'] as $s_key => $s_val){
 				// if a topic with a sameid exists in the DB already
@@ -358,10 +365,10 @@ function inm_save_plugin_settings() {
 	// we need to save possibly new api_key first before the we connect to the remote server
 	$updated = update_option( $schema_DB_table, $settings );
 	// fetch or not the data from server
-	
+
 	$do_fetch = (isset($_POST['do_fetch']) && $_POST['do_fetch'] == true) ? true : false;
 	if($do_fetch == true){
-		// fet the data from inlinemanual.com
+		// fetch the data from inlinemanual.com
 		inm_wordpress_topics_fetch_all();
 	}
 	
@@ -443,7 +450,7 @@ function inm_settings_page() {
 									<span class="description"><?php _e('Enter your API key (Fetch it from <a href="https://inlinemanual.com/my/account">Inlinemanual.com - account</a>)'); ?></span>
 									</p>
 									<p>
-									<input type="checkbox" id="do_fetch" name="do_fetch"> Re/fetch data form Inlinemanual.com
+									<input type="checkbox" id="do_fetch" name="do_fetch"> Re/fetch data from Inlinemanual.com
 									</p>
 								</td>
 							</tr>
