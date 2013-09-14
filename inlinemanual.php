@@ -148,13 +148,19 @@ function inm_player_html() {
    echo '<div id="inm-progress"><div class="inm-progress"></div></div><div id="inline-manual" data-topic-title="" data-steps=""><a id="inm-trigger" href="#"><i class="inm-icon"></i></a></div>';
 	$site_url = parse_url(get_site_url());
 	$site_path = $site_url['path'].'/';
+	global $schema_DB_table;
+	// get the options from DB
+	$data = get_option($schema_DB_table);
+	$settings = $data['primary_key'];
+	$widget_title = 'Get support';
+	if (!empty($settings[1])) { $widget_title = $settings[1]; }
 	$config = json_encode(
 		array(
 			'basePath' => $site_path,
 			'topicsUrl' => '?feed=inlinemanual',
 			'mode' => 'tour',
 			'l10n' => array(
-				'title' => 'Get support',
+				'title' => $widget_title,
 				'refresh' => 'Refresh',
 				'backToTopics' => '&laquo; Back to topics',
 				'scrollUp' => 'Scroll up',
@@ -348,6 +354,7 @@ function inm_save_plugin_settings() {
 			break; 
 			case 'settings' : 
 				$settings['primary_key'][0]  = isset($_POST['api_key']) ? $_POST['api_key'] : '';
+				$settings['primary_key'][1]  = isset($_POST['widget_title']) ? $_POST['widget_title'] : '';
 			break;
 		}
 	}
@@ -447,7 +454,11 @@ function inm_settings_page() {
 								<td>
 									<p>
 									<input type="text" id="api_key" name="api_key" value="<?php echo $api_key[0]; ?>">
-									<span class="description"><?php _e('Enter your API key (Fetch it from <a href="https://inlinemanual.com/my/account">Inlinemanual.com - account</a>)'); ?></span>
+									<span class="description"><?php _e('Enter the site API key (Get it from site detail at <a href="https://inlinemanual.com/sites">Inlinemanual.com - sites</a>)'); ?></span>
+									</p>
+									<p>
+									<input type="text" id="widget_title" name="widget_title" value="<?php echo $api_key[1]; ?>">
+									<span class="description"><?php _e('The title of the widget the end-user will see'); ?></span>
 									</p>
 									<p>
 									<input type="checkbox" id="do_fetch" name="do_fetch"> Re/fetch data from Inlinemanual.com
