@@ -4,7 +4,7 @@ Plugin Name: Inlinemanual
 Plugin URI: http://2046.cz
 Description: Inlinemanual for Wordpress.
 Author: 2046
-Version: 0.2
+Version: 0.3
 Author URI: http://2046.cz
 */
 
