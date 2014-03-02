@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Inlinemanual
-Plugin URI: http://2046.cz
-Description: Inlinemanual for Wordpress.
+Plugin URI: https://inlinemanual.com
+Description: InlineManual for Wordpress.
 Author: 2046
-Version: 0.3
+Version: 0.4
 Author URI: http://2046.cz
 */
 
@@ -25,6 +25,7 @@ $schema_DB_table = 'inlinemanual_settings';
 // ignite feed
 // ?feed=inlinemanual
 // /feed/inlinemanual
+// TODO: We don't need the feed anymore
 function f2046_feed() {
 	add_feed('inlinemanual','inlinemanual_feed');
 }
@@ -59,6 +60,10 @@ function inlinemanual_feed() {
 	echo $output;
 }
 
+function inlinemanual_get_topics() {
+	return inm_feedback_ids();
+}
+
 function inm_feedback_ids() {
 	global $schema_DB_table;
 	// get the options from DB
@@ -73,7 +78,7 @@ function inm_feedback_ids() {
 		if ((int)$user_capability >= (int)$val['permissions'] && (int)$val['permissions'] != -2){ 
 		
 			$topics[$val['id']] = array(
-				'tid' => $val['id'],
+				'id' => $val['id'],
 				'title' => $val['title'],
 				'description' => $val['description'],
 				'version' => $val['version'],
@@ -81,7 +86,7 @@ function inm_feedback_ids() {
 			);
 		}
 	}
-	return json_encode($topics);
+	return $topics;
 }
 
 function inm_feedback_topic($tid) {
@@ -122,8 +127,8 @@ function inm_player_injector(){
 		// check if the current user is granted enough capabilities to see current topic
 		if ((int)$user_capability >= (int)$val['permissions'] && (int)$val['permissions'] != -2){ 
 
-			wp_register_script ( 'inm_player', 'http://inlinemanual.com/inm/player2/js/player.min.js', array('jquery'));
-			wp_register_style ( 'inm_styles','http://inlinemanual.com/inm/player2/css/player.min.css' );
+			wp_register_script ( 'inm_player', 'http://inlinemanual.com/inm/player/js/inm.tour.min.js', array('jquery'));
+			wp_register_style ( 'inm_styles','http://inlinemanual.com/inm/player/css/inm.tour.min.css' );
 
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'inm_player' );
@@ -133,8 +138,6 @@ function inm_player_injector(){
 			
 			// inject html to admin footer
 			add_action( 'admin_footer', 'inm_player_html' );
-			
-
 		}
 	}
 }
@@ -145,7 +148,6 @@ add_action('admin_enqueue_scripts', 'inm_player_injector');
 
 
 function inm_player_html() {
-   echo '<div id="inm-progress"><div class="inm-progress"></div></div><div id="inline-manual" data-topic-title="" data-steps=""><a id="inm-trigger" href="#"><i class="inm-icon"></i></a></div>';
 	$site_url = parse_url(get_site_url());
 	$site_path = $site_url['path'].'/';
 	global $schema_DB_table;
@@ -154,10 +156,10 @@ function inm_player_html() {
 	$settings = $data['primary_key'];
 	$widget_title = 'Get support';
 	if (!empty($settings[1])) { $widget_title = $settings[1]; }
+	$topics = inlinemanual_get_topics();
 	$config = json_encode(
 		array(
 			'basePath' => $site_path,
-			'topicsUrl' => '?feed=inlinemanual',
 			'mode' => 'tour',
 			'l10n' => array(
 				'title' => $widget_title,
@@ -167,11 +169,12 @@ function inm_player_html() {
 				'scrollDown' => 'Scroll down',
 				'progress' => 'of',
 				'poweredBy' => 'Powered by'
-			)
+			),
+			'topics' => $topics
  		)
     );
 
-     echo '<script>jQuery(document).ready( function() { IMP.init( ' . $config . ' ); })</script>';
+     echo '<script>jQuery(document).ready( function() { new InmTour( ' . $config . ' ); })</script>';
 };
 
 
