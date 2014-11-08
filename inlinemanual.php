@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Inlinemanual
+Plugin Name: Inline Manual
 Plugin URI: https://inlinemanual.com
-Description: InlineManual for Wordpress.
+Description: Inline Manual for Wordpress.
 Author: 2046
 Version: 0.4
 Author URI: http://2046.cz
@@ -127,12 +127,10 @@ function inm_player_injector(){
 		// check if the current user is granted enough capabilities to see current topic
 		if ((int)$user_capability >= (int)$val['permissions'] && (int)$val['permissions'] != -2){ 
 
-			wp_register_script ( 'inm_player', 'http://inlinemanual.com/inm/player/js/inm.tour.min.js', array('jquery'));
-			wp_register_style ( 'inm_styles','http://inlinemanual.com/inm/player/css/inm.tour.min.css' );
-
+			wp_register_script ( 'inm_player', 'https://inlinemanual.com/inm/player/inline-manual-player.min.js', array('jquery'), false, true);
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'inm_player' );
-			wp_enqueue_style( 'inm_styles' );
+
 			// include html to the frontend of page
 			add_filter( 'wp_footer' , 'inm_player_html' );
 			
@@ -160,7 +158,6 @@ function inm_player_html() {
 	$config = json_encode(
 		array(
 			'basePath' => $site_path,
-			'mode' => 'tour',
 			'l10n' => array(
 				'title' => $widget_title,
 				'refresh' => 'Refresh',
@@ -174,7 +171,7 @@ function inm_player_html() {
  		)
     );
 
-     echo '<script>jQuery(document).ready( function() { new InmTour( ' . $config . ' ); })</script>';
+    print '<script>jQuery(document).ready( function() { createInlineManualPlayer( ' . $config . ', "InlineManualPlayer" ); })</script>';
 };
 
 
@@ -282,7 +279,7 @@ function inm_DB_options() {
 function inm_admin_UI () {
 	// add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position );
 	$icon_url = plugins_url( 'inlinemanual.png' , __FILE__ );
-	add_menu_page('Inlinemanual','Inlinemanual','manage_options','inm_settings', 'inm_settings_page', $icon_url);
+	add_menu_page('Inline Manual','Inline Manual','manage_options','inm_settings', 'inm_settings_page', $icon_url);
 }
 add_action('admin_menu','inm_admin_UI');
  
@@ -358,6 +355,7 @@ function inm_save_plugin_settings() {
 			case 'settings' : 
 				$settings['primary_key'][0]  = isset($_POST['api_key']) ? $_POST['api_key'] : '';
 				$settings['primary_key'][1]  = isset($_POST['widget_title']) ? $_POST['widget_title'] : '';
+				$settings['primary_key'][2]  = isset($_POST['embed_player']) ? $_POST['embed_player'] : '';
 			break;
 		}
 	}
@@ -381,7 +379,6 @@ function inm_save_plugin_settings() {
 		// fetch the data from inlinemanual.com
 		inm_wordpress_topics_fetch_all();
 	}
-	
 }
 
 function inm_admin_tabs( $current = 'topics' ) { 
@@ -402,7 +399,7 @@ function inm_settings_page() {
 	?>
 	
 	<div class="wrap">
-		<h2><?php _e('Inlinemanual'); ?></h2>
+		<h2><?php _e('Inline Manual'); ?></h2>
 		<p><?php // _e($description); ?></p>
 		<?php
 			// inform user about the update
@@ -449,7 +446,7 @@ function inm_settings_page() {
 								echo '<input type="checkbox" id="delete_all_topics" name="delete_all_topics"> '. __('Delete all topics');
 							}
 						break;
-						case 'settings' : 
+						case 'settings' :
 							// print in the message from remote server
 							?>
 
@@ -464,7 +461,7 @@ function inm_settings_page() {
 									<span class="description"><?php _e('The title of the widget the end-user will see'); ?></span>
 									</p>
 									<p>
-									<input type="checkbox" id="do_fetch" name="do_fetch"> Re/fetch data from Inlinemanual.com
+									<input type="checkbox" id="do_fetch" name="do_fetch"> Re-fetch data from Inlinemanual.com
 									</p>
 								</td>
 							</tr>
@@ -812,4 +809,3 @@ function f2046_filter_number($string){
 	$output = preg_replace("/[^0-9]/", "", $string );
 	return $output;
 }
- 
