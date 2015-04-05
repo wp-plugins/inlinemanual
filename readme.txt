@@ -1,7 +1,7 @@
 === Inline Manual ===
-Contributors: o----o, mareksotak
+Contributors: mareksotak
 Donate link: 
-Tags: API, manual
+Tags: API, manual, documentation
 Requires at least: 3.3
 Tested up to: 3.5.1
 Stable tag: 0.5
