@@ -13,6 +13,10 @@ class InlineManual {
         // replace site API key with predefined from Inline Manual if empty
         if (empty($site_api_key)) $site_api_key = 'cc1bf7b1596c76e15d9ea6c36dc1c402';
 
+        // TODO: make it work with Base Path
+        // $site_url = parse_url(get_site_url());
+        // $site_path = $site_url['path'].'/';
+
         wp_register_script ( 'im_player', 'https://inlinemanual.com/embed/player.' . $site_api_key . '.js', false, false, true );
         wp_enqueue_script( 'im_player' );
     }
