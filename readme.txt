@@ -4,7 +4,7 @@ Donate link:
 Tags: help, tutorial, tutorials, training, learn, howto, learning, guide, teach, video, manual, videos, wphelp, support, instructions, question, questions, answers, answer, q&a, helper, walkthrough, support, manual, sidekick
 Requires at least: 3.3
 Tested up to: 4.1.1
-Stable tag: 0.6
+Stable tag: 0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,7 +40,7 @@ support@inlinemanual.com
 
 
 == Changelog ==
-0.6 Overhaul
+0.9 Overhaul
 - added default site API key
 - added activation tour
 - removed API calls and storage
