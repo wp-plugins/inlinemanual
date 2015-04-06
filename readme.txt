@@ -14,6 +14,8 @@ Connect Inline Manual with your Wordpress.
 
 Inline manual is an online documentation tool, making it easy for everyone to create, update and re-use documentation for your WordPress end-users. Teach them how to use the website you have just created through in-app walkthroughs, tooltips and topic launchers.
 
+http://inlinemanual.com
+
 == Installation ==
 
 1. Launch the "add plugin" page in your WP admin.
