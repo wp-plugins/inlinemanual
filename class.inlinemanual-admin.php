@@ -27,15 +27,46 @@ class InlineManual_Admin {
 		echo '<div class="im-box">';
 		echo '<h3>Basic settings</h3>';
 		echo '<p>';
-		_e('Want to create your own Inline Manual widget with your content? Register with Inline Manual, create a Site and add tutorials you will want to see in the widget. Then enter the Site API key here, in your WordPress site setting.');
+		_e('These settings allows you to use different Site API key for admin and front-end or you can have same Site API key for both.');
 		echo '</p>';
 		echo '<table class="form-table">';
 		echo '<tbody><tr>';
-		echo '<th scope="row"><label for="site_api_key">Site API key</label></th>';
+		echo '<th scope="row"><label for="front_site_api_key">WP Front-end - Site API key</label></th>';
+		echo '<td><input type="text" name="front_site_api_key" value="' . esc_attr( get_option('front_site_api_key') ) . '" class="regular-text" />';
+
+		// print the full list of roles with the primary one selected.
+		$options = get_option('im_frontend_roles');
+		global $wp_roles;
+		if ( ! isset( $wp_roles ) ) {
+			$wp_roles = new WP_Roles();
+		}
+		$roles = $wp_roles->get_names();
+		echo '<p><input type="checkbox" name="im_frontend_roles[im_anonymous]" value="1" ' . checked( 1, $options['im_anonymous'], false ) . '>Anonymous</p>';
+		foreach ($roles as $role_value => $role_name) {
+			echo '<p><input type="checkbox" name="im_frontend_roles['.$role_value.']" value="1" ' . checked( 1, $options[$role_value], false ) . '>'.$role_name.'</p>';
+		}
+
+		echo '</td>';
+		echo '</tr>';
+		echo '<tr>';
+		echo '<th scope="row"><label for="site_api_key">WP Admin - Site API key</label></th>';
 		echo '<td><input type="text" name="site_api_key" value="' . esc_attr( get_option('site_api_key') ) . '" class="regular-text" />';
+
+		// print the full list of roles with the primary one selected.
+		$options = get_option('im_admin_roles');
+		global $wp_roles;
+		if ( ! isset( $wp_roles ) ) {
+			$wp_roles = new WP_Roles();
+		}
+		$roles = $wp_roles->get_names();
+		foreach ($roles as $role_value => $role_name) {
+			echo '<p><input type="checkbox" name="im_admin_roles['.$role_value.']" value="1" ' . checked( 1, $options[$role_value], false ) . '>'.$role_name.'</p>';
+		}
+
 		echo '</td>';
 		echo '</tr>';
 		echo '</table>';
+
 		submit_button();
 		echo '</div>';
 		echo '</form>';
@@ -59,6 +90,9 @@ class InlineManual_Admin {
 	}
 	public static function register_settings() { // whitelist options
 	  register_setting( 'general-group', 'site_api_key' );
+	  register_setting( 'general-group', 'front_site_api_key' );
+	  register_setting( 'general-group', 'im_frontend_roles' );
+	  register_setting( 'general-group', 'im_admin_roles' );
 	}
 	public static function admin_styles() {
 		wp_enqueue_style( 'inlineManualAdminStyle' );
